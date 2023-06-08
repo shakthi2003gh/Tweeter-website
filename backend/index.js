@@ -9,6 +9,8 @@ const app = express();
 const startup = debug("startup:");
 const dbugError = debug("error:");
 
+const { posts } = require("./routers/posts");
+
 const PORT = process.env.PORT || 3001;
 const DB = process.env.DB_URL;
 
@@ -22,8 +24,8 @@ mongoose
     dbugError(`Could not connect to mongodb ${DB}...`);
   });
 
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
-app.get("/", (_, res) => {
-  res.send("Hello world");
-});
+app.use("/api/posts", posts);
+app.use("/posts", express.static("uploads/posts/"));
+app.use("/user", express.static("uploads/profile/"));
