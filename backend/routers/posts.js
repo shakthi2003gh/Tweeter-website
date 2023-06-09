@@ -1,7 +1,8 @@
 const router = require("express").Router();
 const { uploadPost } = require("../services/multer");
+const { User } = require("../models/user");
 const { Post, validatePost } = require("../models/post");
-const { validateComment } = require("../models/comment");
+const { auth } = require("../middleware/auth");
 const { validateObjectId } = require("../middleware/validateObjectId");
 
 router.get("/", async (_, res) => {
@@ -24,61 +25,45 @@ router.get("/:id/comments", validateObjectId, async (req, res) => {
   res.send(post.comments);
 });
 
-router.post("/", uploadPost.single("image"), async (req, res) => {
-  // > placeholder
-  req.user = {
-    _id: "354544545454",
-    name: "shakthi",
-    isAdmin: true,
-  };
-
+router.post("/", auth, uploadPost, async (req, res) => {
   const { error, value } = validatePost(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const filename = "posts/" + req.file.filename;
+  const filename = "posts/" + req.file?.filename;
   const newPost = {
     user: req.user,
     content: {
       text: value.text,
-      image: filename,
+      image: req.file ? filename : undefined,
     },
     isEveryOneCanReply: value.isEveryOneCanReply,
   };
 
-  const post = await Post(newPost);
+  const post = new Post(newPost);
   await post.save();
+
+  const user = await User.findById(post.user._id);
+  user.post_ids.push(post._id);
+  await user.save();
 
   res.send(post);
 });
 
-router.post("/:id/comment", validateObjectId, async (req, res) => {
-  // > placeholder
-  req.user = {
-    _id: "354544545454",
-    name: "shakthi",
-    isAdmin: true,
-  };
-
+router.delete("/:id", auth, validateObjectId, async (req, res) => {
   const post = await Post.findById(req.params.id);
-  if (!post) return res.status(404).send("Post not found.");
-
-  const { error, value } = validateComment(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
-
-  const comment = {
-    user: req.user,
-    ...value,
-  };
-
-  post.comments.push(comment);
-  await post.save();
-
-  res.send({ post_id: post._id, comment });
-});
-
-router.delete("/:id", validateObjectId, async (req, res) => {
-  const post = await Post.findByIdAndDelete(req.params.id);
   if (!post) return res.status(400).send("Post with given id does not exist.");
+
+  if (post.user._id !== req.user._id)
+    return res
+      .status(403)
+      .send("User do not have permission to delete this post.");
+
+  await Post.findByIdAndDelete(post._id);
+
+  const user = await User.findById(post.user._id);
+  const index = user.post_ids.indexOf(post._id);
+  user.post_ids.splice(index, 1);
+  await user.save();
 
   res.send(post);
 });
