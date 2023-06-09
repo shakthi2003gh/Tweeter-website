@@ -14,7 +14,8 @@ router.get("/me", auth, async (req, res) => {
 });
 
 router.get("/:id", auth, validateObjectId, async (req, res) => {
-  const user = await User.findById(req.params.id).select("_id name image");
+  const user = await User.findById(req.params.id).select("-password");
+  if (!user) return res.status(404).send("User not found.");
 
   res.send(user);
 });
