@@ -1,15 +1,12 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
-const { Comment } = require("./comment");
+const { shortUserSchema } = require("./user");
+const { commentSchema } = require("./comment");
 
 const schema = new mongoose.Schema(
   {
     user: {
-      type: {
-        _id: mongoose.Types.ObjectId,
-        name: String,
-        image: String,
-      },
+      type: shortUserSchema,
       required: true,
     },
     content: {
@@ -22,16 +19,24 @@ const schema = new mongoose.Schema(
       image: String,
     },
     comments: {
-      type: [Comment.schema],
+      type: [commentSchema],
       default: [],
     },
     likes: {
+      user_ids: {
+        type: [mongoose.Types.ObjectId],
+        default: [],
+      },
       count: {
         type: Number,
         default: 0,
       },
     },
     saved: {
+      user_ids: {
+        type: [mongoose.Types.ObjectId],
+        default: [],
+      },
       count: {
         type: Number,
         default: 0,
