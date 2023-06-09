@@ -12,6 +12,7 @@ const dbugError = debug("error:");
 const { posts } = require("./routers/posts");
 const { users } = require("./routers/users");
 const { comments } = require("./routers/comments");
+const { auth } = require("./routers/auth");
 
 const PORT = process.env.PORT || 3001;
 const DB = process.env.DB_URL;
@@ -32,6 +33,7 @@ app.use(bodyParser.json());
 app.use("/api/comment", comments);
 app.use("/api/posts", posts);
 app.use("/api/users", users);
+app.use("/api/auth", auth);
 
 app.use("/posts", express.static("uploads/posts/"));
 app.use("/user", express.static("uploads/profile/"));
