@@ -1,9 +1,10 @@
 const router = require("express").Router();
 const { Post } = require("../models/post");
 const { validateComment } = require("../models/comment");
+const { auth } = require("../middleware/auth");
 const { validateObjectId } = require("../middleware/validateObjectId");
 
-router.post("/:id", validateObjectId, async (req, res) => {
+router.post("/:id", auth, validateObjectId, async (req, res) => {
   const post = await Post.findById(req.params.id);
   if (!post) return res.status(404).send("Post not found.");
 
