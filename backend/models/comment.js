@@ -1,14 +1,11 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
+const { shortUserSchema } = require("./user");
 
 const schema = new mongoose.Schema(
   {
     user: {
-      type: {
-        _id: mongoose.Types.ObjectId,
-        name: String,
-        image: String,
-      },
+      type: shortUserSchema,
       required: true,
     },
     message: {
@@ -18,6 +15,10 @@ const schema = new mongoose.Schema(
       maxlength: 200,
     },
     likes: {
+      user_ids: {
+        type: [mongoose.Types.ObjectId],
+        default: [],
+      },
       count: {
         type: Number,
         default: 0,
@@ -38,4 +39,4 @@ function validateComment(comment) {
 }
 
 exports.validateComment = validateComment;
-exports.Comment = mongoose.model("Comment", schema);
+exports.commentSchema = schema;
