@@ -10,6 +10,7 @@ const startup = debug("startup:");
 const dbugError = debug("error:");
 
 const { posts } = require("./routers/posts");
+const { comments } = require("./routers/comments");
 
 const PORT = process.env.PORT || 3001;
 const DB = process.env.DB_URL;
@@ -26,6 +27,9 @@ mongoose
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.use("/api/comment", comments);
 app.use("/api/posts", posts);
+
 app.use("/posts", express.static("uploads/posts/"));
 app.use("/user", express.static("uploads/profile/"));
