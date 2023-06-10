@@ -112,6 +112,32 @@ router.post("/:id/save", auth, validateObjectId, async (req, res) => {
   res.sendStatus(204);
 });
 
+router.post("/:id/unsave", auth, validateObjectId, async (req, res) => {
+  const id = req.user._id;
+
+  const post = await Post.findById(req.params.id);
+  if (!post) return res.status(404).send("Post not found.");
+
+  if (post.user.id === id)
+    return res.status(403).send("User cannot unsave their own post");
+
+  if (!post.saved.user_ids.includes(id))
+    return res.status(409).send("User not saved this post.");
+
+  const savedUserIdIndex = post.saved.user_ids.indexOf(id);
+  post.saved.user_ids.splice(savedUserIdIndex, 1);
+  post.saved.count = post.saved.user_ids.length;
+
+  const user = await User.findById(id);
+  const savedPostIdIndex = user.saved_post_ids.indexOf(id);
+  user.saved_post_ids.splice(savedPostIdIndex, 1);
+
+  await user.save();
+  await post.save();
+
+  res.sendStatus(204);
+});
+
 router.delete("/:id", auth, validateObjectId, async (req, res) => {
   const post = await Post.findById(req.params.id);
   if (!post) return res.status(400).send("Post with given id does not exist.");
