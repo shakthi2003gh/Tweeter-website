@@ -68,6 +68,26 @@ router.post("/:id/like", auth, validateObjectId, async (req, res) => {
   res.sendStatus(204);
 });
 
+router.post("/:id/unlike", auth, validateObjectId, async (req, res) => {
+  const id = req.user._id;
+
+  const post = await Post.findById(req.params.id);
+  if (!post) return res.status(404).send("Post not found.");
+
+  if (post.user.id === id)
+    return res.status(403).send("User cannot unlike their own post");
+
+  if (!post.likes.user_ids.includes(id))
+    return res.status(409).send("User not liked this post.");
+
+  const index = post.likes.user_ids.indexOf(id);
+  post.likes.user_ids.splice(index, 1);
+  post.likes.count = post.likes.user_ids.length;
+
+  await post.save();
+  res.sendStatus(204);
+});
+
 router.delete("/:id", auth, validateObjectId, async (req, res) => {
   const post = await Post.findById(req.params.id);
   if (!post) return res.status(400).send("Post with given id does not exist.");
