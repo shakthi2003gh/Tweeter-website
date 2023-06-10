@@ -88,6 +88,30 @@ router.post("/:id/unlike", auth, validateObjectId, async (req, res) => {
   res.sendStatus(204);
 });
 
+router.post("/:id/save", auth, validateObjectId, async (req, res) => {
+  const id = req.user._id;
+
+  const post = await Post.findById(req.params.id);
+  if (!post) return res.status(404).send("Post not found.");
+
+  if (post.user.id === id)
+    return res.status(403).send("User cannot save their own post");
+
+  if (post.saved.user_ids.includes(id))
+    return res.status(409).send("User already saved this post.");
+
+  post.saved.user_ids.push(id);
+  post.saved.count = post.saved.user_ids.length;
+
+  const user = await User.findById(id);
+  user.saved_post_ids.push(post._id);
+
+  await user.save();
+  await post.save();
+
+  res.sendStatus(204);
+});
+
 router.delete("/:id", auth, validateObjectId, async (req, res) => {
   const post = await Post.findById(req.params.id);
   if (!post) return res.status(400).send("Post with given id does not exist.");
