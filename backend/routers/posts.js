@@ -49,6 +49,25 @@ router.post("/", auth, uploadPost, async (req, res) => {
   res.send(post);
 });
 
+router.post("/:id/like", auth, validateObjectId, async (req, res) => {
+  const id = req.user._id;
+
+  const post = await Post.findById(req.params.id);
+  if (!post) return res.status(404).send("Post not found.");
+
+  if (post.user.id === id)
+    return res.status(403).send("User cannot like their own post");
+
+  if (post.likes.user_ids.includes(id))
+    return res.status(409).send("User already liked this post.");
+
+  post.likes.user_ids.push(id);
+  post.likes.count = post.likes.user_ids.length;
+
+  await post.save();
+  res.sendStatus(204);
+});
+
 router.delete("/:id", auth, validateObjectId, async (req, res) => {
   const post = await Post.findById(req.params.id);
   if (!post) return res.status(400).send("Post with given id does not exist.");
