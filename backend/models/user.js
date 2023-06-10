@@ -32,6 +32,11 @@ const schema = new mongoose.Schema(
       default: [],
       ref: "Post",
     },
+    saved_post_ids: {
+      type: [mongoose.Types.ObjectId],
+      default: [],
+      ref: "Post",
+    },
     following: {
       user_ids: {
         type: [mongoose.Types.ObjectId],
