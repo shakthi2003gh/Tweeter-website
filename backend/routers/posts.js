@@ -2,6 +2,7 @@ const router = require("express").Router();
 const { uploadPost } = require("../services/multer");
 const { User } = require("../models/user");
 const { Post, validatePost } = require("../models/post");
+const { validateComment } = require("../models/comment");
 const { auth } = require("../middleware/auth");
 const { validateObjectId } = require("../middleware/validateObjectId");
 
@@ -47,6 +48,24 @@ router.post("/", auth, uploadPost, async (req, res) => {
   await user.save();
 
   res.send(post);
+});
+
+router.post("/:id/comment", auth, validateObjectId, async (req, res) => {
+  const post = await Post.findById(req.params.id);
+  if (!post) return res.status(404).send("Post not found.");
+
+  const { error, value } = validateComment(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
+
+  const comment = {
+    user: req.user,
+    ...value,
+  };
+
+  post.comments.push(comment);
+  await post.save();
+
+  res.send({ post_id: post._id, comment });
 });
 
 router.post("/:id/like", auth, validateObjectId, async (req, res) => {

@@ -12,7 +12,6 @@ const dbugError = debug("error:");
 
 const { posts } = require("./routers/posts");
 const { users } = require("./routers/users");
-const { comments } = require("./routers/comments");
 const { auth } = require("./routers/auth");
 const { error } = require("./middleware/error");
 
@@ -32,7 +31,6 @@ mongoose
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use("/api/comment", comments);
 app.use("/api/posts", posts);
 app.use("/api/users", users);
 app.use("/api/auth", auth);
