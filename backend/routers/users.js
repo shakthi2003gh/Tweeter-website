@@ -39,6 +39,26 @@ router.post("/", async (req, res) => {
   res.header("x-tweeter-auth", token).send(_.pick(user, keys));
 });
 
+router.post("/:id/follow", auth, validateObjectId, async (req, res) => {
+  const user = await User.findById(req.user._id);
+  const otherUser = await User.findById(req.params.id);
+  if (!otherUser) return res.status(404).send("User not found.");
+
+  if (user.following.user_ids.includes(otherUser._id))
+    return res.status(409).send("User already following user with given id.");
+
+  user.following.user_ids.push(otherUser._id);
+  user.following.count = user.following.user_ids.length;
+
+  otherUser.followers.user_ids.push(req.user._id);
+  otherUser.followers.count = otherUser.followers.user_ids.length;
+
+  await user.save();
+  await otherUser.save();
+
+  res.sendStatus(204);
+});
+
 router.patch("/", auth, uploadProfile, async (req, res) => {
   const { error, value } = validateUpdateUser(req.body);
   if (error) return res.status(400).send(error.details[0].message);
