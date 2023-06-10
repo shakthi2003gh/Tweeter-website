@@ -59,6 +59,28 @@ router.post("/:id/follow", auth, validateObjectId, async (req, res) => {
   res.sendStatus(204);
 });
 
+router.post("/:id/unfollow", auth, validateObjectId, async (req, res) => {
+  const user = await User.findById(req.user._id);
+  const otherUser = await User.findById(req.params.id);
+  if (!otherUser) return res.status(404).send("User not found.");
+
+  if (!user.following.user_ids.includes(otherUser._id))
+    return res.status(409).send("User not following user with given id.");
+
+  const FollowingIdIndex = user.following.user_ids.indexOf(otherUser._id);
+  user.following.user_ids.splice(FollowingIdIndex, 1);
+  user.following.count = user.following.user_ids.length;
+
+  const FollowersIdIndex = otherUser.followers.user_ids.indexOf(user._id);
+  otherUser.followers.user_ids.splice(FollowersIdIndex, 1);
+  otherUser.followers.count = otherUser.followers.user_ids.length;
+
+  await user.save();
+  await otherUser.save();
+
+  res.sendStatus(204);
+});
+
 router.patch("/", auth, uploadProfile, async (req, res) => {
   const { error, value } = validateUpdateUser(req.body);
   if (error) return res.status(400).send(error.details[0].message);
