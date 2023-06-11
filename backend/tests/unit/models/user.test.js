@@ -1,8 +1,25 @@
+require("dotenv").config();
+
+const jwt = require("jsonwebtoken");
 const {
+  User,
   validateSignup,
   validateSignin,
   validateUpdateUser,
 } = require("../../../models/user");
+
+describe("user.generateAuthToken", () => {
+  it("should return a valid jsonwebtoken", () => {
+    const _id = "648523820cecedf3c16f1502";
+    const payload = { _id, name: "shakthi", image: "shakthi/image" };
+
+    const user = new User(payload);
+    const token = user.generateAuthToken();
+    const decoded = jwt.verify(token, process.env.JWK);
+
+    expect(decoded).toMatchObject(payload);
+  });
+});
 
 describe("user validators", () => {
   describe("user signup validator", () => {
