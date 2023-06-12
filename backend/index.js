@@ -21,7 +21,6 @@ const DB = process.env.DB_URL;
 mongoose
   .connect(DB)
   .then(() => {
-    app.listen(PORT);
     startup(`Listening on port ${PORT}...`);
   })
   .catch(() => {
@@ -39,3 +38,5 @@ app.use("/posts", express.static("uploads/posts/"));
 app.use("/user", express.static("uploads/profile/"));
 
 app.use(error);
+
+module.exports = app.listen(PORT);
