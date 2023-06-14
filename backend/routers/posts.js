@@ -159,7 +159,7 @@ router.post("/:id/unsave", auth, validateObjectId, async (req, res) => {
 
 router.delete("/:id", auth, validateObjectId, async (req, res) => {
   const post = await Post.findById(req.params.id);
-  if (!post) return res.status(400).send("Post with given id does not exist.");
+  if (!post) return res.status(404).send("Post with given id does not exist.");
 
   if (post.user.id !== req.user._id)
     return res
