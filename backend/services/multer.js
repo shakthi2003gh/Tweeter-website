@@ -5,8 +5,8 @@ const postStorage = multer.diskStorage({
     cb(null, "uploads/posts/");
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + ".jpg");
+    const fileName = "post" + "-" + Date.now();
+    cb(null, fileName + ".jpg");
   },
 });
 
@@ -15,8 +15,8 @@ const profileStorage = multer.diskStorage({
     cb(null, "uploads/profile/");
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + ".jpg");
+    const fileName = req.user.name + "-" + Date.now();
+    cb(null, fileName + ".jpg");
   },
 });
 
