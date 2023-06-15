@@ -35,11 +35,22 @@ router.post("/", async (req, res) => {
   await user.save();
 
   const token = user.generateAuthToken();
-  const keys = ["_id", "name", "email", "post_ids", "following", "followers"];
+  const keys = [
+    "_id",
+    "name",
+    "email",
+    "post_ids",
+    "saved_post_ids",
+    "following",
+    "followers",
+  ];
   res.header("x-tweeter-auth", token).send(_.pick(user, keys));
 });
 
 router.post("/:id/follow", auth, validateObjectId, async (req, res) => {
+  if (req.user._id === req.params.id)
+    return res.status(400).send("User cannot follow themself.");
+
   const user = await User.findById(req.user._id);
   const otherUser = await User.findById(req.params.id);
   if (!otherUser) return res.status(404).send("User not found.");
@@ -60,6 +71,9 @@ router.post("/:id/follow", auth, validateObjectId, async (req, res) => {
 });
 
 router.post("/:id/unfollow", auth, validateObjectId, async (req, res) => {
+  if (req.user._id === req.params.id)
+    return res.status(400).send("User cannot unfollow themself.");
+
   const user = await User.findById(req.user._id);
   const otherUser = await User.findById(req.params.id);
   if (!otherUser) return res.status(404).send("User not found.");
@@ -94,20 +108,18 @@ router.patch("/", auth, uploadProfile, async (req, res) => {
   const user = await User.findByIdAndUpdate(req.user._id, updateUser, {
     new: true,
   }).select("-password");
-  if (!user) return res.status(404).send("User not found.");
 
   res.send(user);
 });
 
 router.delete("/me", auth, async (req, res) => {
   const user = await User.findByIdAndDelete(req.user._id);
-  if (!user) return res.status(404).send("User not found.");
 
   user.post_ids.forEach(async (id) => {
     await Post.findByIdAndDelete(id);
   });
 
-  res.removeHeader("x-tweeter-auth").send("User successfully deleted.");
+  res.send("User successfully deleted.");
 });
 
 exports.users = router;

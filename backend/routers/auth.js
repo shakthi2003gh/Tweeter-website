@@ -15,7 +15,15 @@ router.post("/", async (req, res) => {
     return res.status(400).send("Invalid email or password");
 
   const token = user.generateAuthToken();
-  const keys = ["_id", "name", "email", "post_ids", "following", "followers"];
+  const keys = [
+    "_id",
+    "name",
+    "email",
+    "post_ids",
+    "following",
+    "saved_post_ids",
+    "followers",
+  ];
   res.header("x-tweeter-auth", token).send(_.pick(user, keys));
 });
 
