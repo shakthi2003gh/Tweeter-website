@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Joi from "joi";
 import InputGroup from "../components/inputGroup";
+import { createUser } from "../services/http";
 
 function SignupForm() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const [name, setName] = useState("");
@@ -28,6 +30,12 @@ function SignupForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
+    const payload = { name, email, password };
+    await createUser(payload)
+      .then(() => navigate("/"))
+      .finally(() => setLoading(false));
   };
 
   return (
