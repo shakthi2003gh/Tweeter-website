@@ -42,3 +42,22 @@ export function loginUser(payload) {
       });
   });
 }
+
+export function verifyUser(token) {
+  const options = { headers: { "x-tweeter-auth": token } };
+
+  return new Promise(async (resolve, reject) => {
+    axios
+      .get(URL + usersPath + "/me", options)
+      .then((res) => {
+        console.log(res.data);
+
+        resolve();
+      })
+      .catch((e) => {
+        localStorage.removeItem("x-tweeter-auth");
+        notifyError(e.response.data.message);
+        reject(e.response.data.message);
+      });
+  });
+}
