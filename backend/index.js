@@ -4,6 +4,7 @@ require("express-async-errors");
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 const debug = require("debug");
 
 const app = express();
@@ -27,6 +28,14 @@ mongoose
     dbugError(`Could not connect to mongodb ${DB}...`);
   });
 
+const origin = process.env.ORIGIN;
+const corsOptions = {
+  origin,
+  optionsSuccessStatus: 200,
+  exposedHeaders: "x-tweeter-auth",
+};
+
+app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
