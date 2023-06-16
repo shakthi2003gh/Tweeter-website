@@ -1,4 +1,5 @@
 import axios from "axios";
+import { notifyError } from "./toast";
 
 const URL = import.meta.env.VITE_API_ENDPOINT;
 const authPath = "/api/auth";
@@ -17,6 +18,7 @@ export function createUser(payload) {
         resolve();
       })
       .catch((e) => {
+        notifyError(e.response.data);
         reject(e.response.data);
       });
   });
@@ -35,6 +37,7 @@ export function loginUser(payload) {
         resolve();
       })
       .catch((e) => {
+        notifyError(e.response.data);
         reject(e.response.data);
       });
   });
