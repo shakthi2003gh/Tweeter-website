@@ -1,5 +1,7 @@
 import axios from "axios";
 import { notifyError } from "./toast";
+import store from "../store/index";
+import { AddUser, removeUser } from "../store/user";
 
 const URL = import.meta.env.VITE_API_ENDPOINT;
 const authPath = "/api/auth";
@@ -10,7 +12,7 @@ export function createUser(payload) {
     axios
       .post(URL + usersPath, payload)
       .then((res) => {
-        console.log(res.data);
+        AddUser(store, res.data);
 
         const token = res.headers.get("x-tweeter-auth");
         localStorage.setItem("x-tweeter-auth", token);
@@ -29,8 +31,7 @@ export function loginUser(payload) {
     axios
       .post(URL + authPath, payload)
       .then((res) => {
-        console.log(res.data);
-
+        AddUser(store, res.data);
         const token = res.headers.get("x-tweeter-auth");
         localStorage.setItem("x-tweeter-auth", token);
 
@@ -50,12 +51,14 @@ export function verifyUser(token) {
     axios
       .get(URL + usersPath + "/me", options)
       .then((res) => {
-        console.log(res.data);
+        AddUser(store, res.data);
 
         resolve();
       })
       .catch((e) => {
+        removeUser(store);
         localStorage.removeItem("x-tweeter-auth");
+
         notifyError(e.response.data.message);
         reject(e.response.data.message);
       });
