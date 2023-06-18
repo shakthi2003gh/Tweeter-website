@@ -44,7 +44,7 @@ app.use("/api/users", users);
 app.use("/api/auth", auth);
 
 app.use("/posts", express.static("uploads/posts/"));
-app.use("/user", express.static("uploads/profile/"));
+app.use("/profile", express.static("uploads/profile/"));
 
 app.use(error);
 
