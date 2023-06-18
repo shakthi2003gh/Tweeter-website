@@ -44,6 +44,11 @@ export function loginUser(payload) {
   });
 }
 
+export function logoutUser() {
+  localStorage.removeItem("x-tweeter-auth");
+  removeUser(store);
+}
+
 export function verifyUser(token) {
   const options = { headers: { "x-tweeter-auth": token } };
 
