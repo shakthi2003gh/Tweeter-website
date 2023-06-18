@@ -18,6 +18,7 @@ router.post("/", async (req, res) => {
   const keys = [
     "_id",
     "name",
+    "image",
     "email",
     "post_ids",
     "following",
