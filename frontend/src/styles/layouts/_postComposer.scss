@@ -1,0 +1,114 @@
+.post-composer {
+  --px: 0.8rem;
+  --py: 0.6rem;
+
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding-inline: var(--px);
+  border-radius: 12px;
+  background-color: white;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: var(--py);
+    border-bottom: 1px solid rgba(224, 224, 224, 1);
+    color: rgba(79, 79, 79, 1);
+  }
+
+  .body {
+    display: flex;
+    gap: 1rem;
+    padding-block: var(--py);
+
+    img {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    textarea {
+      font-size: 1rem;
+      flex: 1 1 80%;
+      height: 50px;
+      resize: none;
+      border: none;
+      outline: none;
+    }
+
+    .upload-image {
+      position: relative;
+      height: 40px;
+      border-radius: 6px;
+      overflow: hidden;
+      cursor: pointer;
+
+      .bi-trash {
+        position: absolute;
+        inset: 0;
+        display: none;
+        color: white;
+        background-color: rgba(255, 0, 0, 0.226);
+        z-index: 545;
+      }
+
+      &:hover .bi-trash {
+        display: grid;
+        place-content: center;
+      }
+    }
+  }
+
+  .footer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding-block: var(--py);
+
+    input {
+      display: none;
+    }
+
+    .bi {
+      position: relative;
+      font-size: 0.8rem;
+      font-style: normal;
+      padding-left: 1.4rem;
+      color: rgba(47, 128, 237, 1);
+      cursor: pointer;
+
+      &-image {
+        padding-left: 1rem;
+      }
+
+      &::before {
+        position: absolute;
+        top: 2px;
+        left: 0;
+        font-size: 1rem;
+      }
+    }
+
+    .can-reply-popup {
+      position: absolute;
+      top: 4rem;
+      left: 2rem;
+    }
+
+    .tweet {
+      margin-left: auto;
+    }
+  }
+
+  @media (min-width: 600px) {
+    --px: 1rem;
+    --py: 0.8rem;
+
+    .footer {
+      margin-left: 3.5rem;
+    }
+  }
+}

@@ -12,10 +12,12 @@ function App() {
     <div className="App">
       <Header />
 
-      <Routes>
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/" element={<Home />} />
-      </Routes>
+      <main className="container">
+        <Routes>
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/" element={<Home />} />
+        </Routes>
+      </main>
 
       {isMobileDisplay && <MobileNavigation />}
     </div>

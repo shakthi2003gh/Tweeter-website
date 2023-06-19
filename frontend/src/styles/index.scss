@@ -2,6 +2,19 @@
 @forward "layouts";
 @forward "components";
 
+body {
+  background-color: rgba(242, 242, 242, 1);
+  height: 100dvh;
+}
+
+main {
+  padding: 1rem;
+
+  @media (min-width: 600px) {
+    padding-inline: 0;
+  }
+}
+
 .flex-center {
   display: flex;
   justify-content: center;
