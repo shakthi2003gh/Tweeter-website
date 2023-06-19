@@ -38,15 +38,7 @@ header {
     }
   }
 
-  .profile-menu .menu {
-    margin-right: 2rem;
-  }
-
   @media (min-width: 600px) {
     padding-inline: 0;
-
-    .profile-menu .menu {
-      margin-right: 0;
-    }
   }
 }
