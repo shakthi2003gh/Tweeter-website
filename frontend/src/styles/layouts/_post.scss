@@ -1,0 +1,106 @@
+.post {
+  padding: 1rem;
+  border-radius: 12px;
+  color: rgba(79, 79, 79, 1);
+  background-color: white;
+  overflow: hidden;
+
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    > div {
+      display: grid;
+    }
+
+    a {
+      font-weight: 600;
+      text-decoration: none;
+      color: black;
+    }
+
+    .created-at {
+      font-size: 0.8rem;
+      color: rgba(189, 189, 189, 1);
+    }
+  }
+
+  .content {
+    .text {
+      margin-top: 0.7rem;
+    }
+
+    .image {
+      margin-block: 0.7rem 1rem;
+      border-radius: 8px;
+      overflow: hidden;
+      background-color: black;
+
+      img {
+        width: 100%;
+        height: 100%;
+        max-height: 450px;
+        object-fit: contain;
+      }
+    }
+  }
+
+  .feedback-stats {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+    color: rgba(189, 189, 189, 1);
+  }
+
+  .feedback-section {
+    display: flex;
+    justify-content: space-evenly;
+    padding-block: 6px;
+    border-block: 1px solid rgba(242, 242, 242, 1);
+
+    button {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+      text-transform: capitalize;
+      padding: 3px 1rem;
+
+      &:hover {
+        background-color: rgba(242, 242, 242, 1);
+      }
+
+      i {
+        margin-top: 0.2rem;
+      }
+
+      &.liked {
+        color: rgba(235, 87, 87, 1);
+      }
+
+      &.saved {
+        color: rgba(45, 156, 219, 1);
+      }
+
+      span {
+        display: none;
+      }
+    }
+
+    @media (min-width: 400px) {
+      button span {
+        display: inline;
+      }
+    }
+  }
+
+  .comment-composer {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.7rem;
+  }
+}
