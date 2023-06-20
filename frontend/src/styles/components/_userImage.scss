@@ -1,0 +1,13 @@
+.user-image {
+  img {
+    width: 35px;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .bi-person-circle {
+    font-size: 28px;
+  }
+}

@@ -2,19 +2,14 @@
   position: relative;
   font-size: 28px;
 
-  img {
-    width: 35px;
-    aspect-ratio: 1;
-    object-fit: cover;
-    border-radius: 6px;
-    overflow: hidden;
-    margin-bottom: 0.25rem;
-  }
-
   &:focus-within .menu,
   &:hover .menu {
     opacity: 100%;
     transform: translateX(40%) translateY(0);
+  }
+
+  .user-image img {
+    margin-bottom: 0.25rem;
   }
 
   .menu {

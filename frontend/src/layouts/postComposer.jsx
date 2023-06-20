@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import Joi from "joi";
+import UserImage from "../components/userImage";
 import CanReplyPopup from "../components/canReplyPopup";
 import { createPost } from "../services/http";
 
@@ -15,8 +16,7 @@ function PostComposer() {
   const [fileBlob, setFileBlob] = useState(undefined);
 
   const imageRef = useRef(null);
-  const userImagePath = useSelector((state) => state.user.image);
-  const path = import.meta.env.VITE_API_ENDPOINT + "/" + userImagePath;
+  const path = useSelector((state) => state.user.image);
 
   const schema = {
     text: Joi.string().required().min(5).max(400).label("text"),
@@ -86,11 +86,7 @@ function PostComposer() {
       </div>
 
       <div className="body">
-        {userImagePath ? (
-          <img src={path} alt="" />
-        ) : (
-          <i className="bi bi-person-circle"></i>
-        )}
+        <UserImage path={path} />
 
         <textarea
           placeholder="What's happening?"

@@ -1,11 +1,11 @@
-import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { logoutUser } from "../services/http";
+import UserImage from "./userImage";
 
 function ProfileMenu() {
   const navigate = useNavigate();
-  const userImagePath = useSelector((state) => state.user.image);
-  const path = import.meta.env.VITE_API_ENDPOINT + "/" + userImagePath;
+  const path = useSelector((state) => state.user.image);
 
   const handleClick = () => {
     logoutUser();
@@ -15,11 +15,7 @@ function ProfileMenu() {
   return (
     <div className="profile-menu">
       <Link to="/profile">
-        {userImagePath ? (
-          <img src={path} alt="" />
-        ) : (
-          <i className="bi bi-person-circle"></i>
-        )}
+        <UserImage path={path} />
       </Link>
 
       <div className="menu">
