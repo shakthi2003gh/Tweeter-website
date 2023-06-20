@@ -7,6 +7,7 @@ import { createPost } from "../services/http";
 function PostComposer() {
   const [image, setImage] = useState("");
   const [displayError, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const [text, setText] = useState("");
@@ -65,7 +66,9 @@ function PostComposer() {
   const handleTweet = async () => {
     const post = { text, image: fileBlob, isEveryOneCanReply };
 
+    setIsLoading(true);
     await createPost(post);
+    setIsLoading(false);
 
     setText("");
     handleRemoveImage();
@@ -132,7 +135,7 @@ function PostComposer() {
 
         <button
           className="btn btn-primary tweet"
-          disabled={isDisabled}
+          disabled={isDisabled || isLoading}
           onClick={handleTweet}
         >
           Tweet
