@@ -18,6 +18,10 @@ const postsSlice = createSlice({
 
 const { add, get } = postsSlice.actions;
 
+export function initPosts(store, post) {
+  store.dispatch(get(post));
+}
+
 export function addPost(store, post) {
   store.dispatch(add(post));
 }

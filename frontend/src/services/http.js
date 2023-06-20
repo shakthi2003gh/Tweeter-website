@@ -2,7 +2,7 @@ import axios from "axios";
 import { notifyError } from "./toast";
 import store from "../store/index";
 import { AddUser, removeUser } from "../store/user";
-import { addPost } from "../store/posts";
+import { initPosts, addPost } from "../store/posts";
 
 const URL = import.meta.env.VITE_API_ENDPOINT;
 const authPath = "/api/auth";
@@ -21,6 +21,7 @@ export function createUser(payload) {
       .post(URL + usersPath, payload)
       .then((res) => {
         AddUser(store, res.data);
+        getAllPosts();
 
         const token = res.headers.get("x-tweeter-auth");
         localStorage.setItem("x-tweeter-auth", token);
@@ -40,6 +41,8 @@ export function loginUser(payload) {
       .post(URL + authPath, payload)
       .then((res) => {
         AddUser(store, res.data);
+        getAllPosts();
+
         const token = res.headers.get("x-tweeter-auth");
         localStorage.setItem("x-tweeter-auth", token);
 
@@ -65,6 +68,7 @@ export function verifyUser(token) {
       .get(URL + usersPath + "/me", options)
       .then((res) => {
         AddUser(store, res.data);
+        getAllPosts();
 
         resolve();
       })
@@ -90,6 +94,40 @@ export function createPost(post) {
         resolve();
       })
       .catch((e) => {
+        notifyError(e.response.data.message);
+        reject(e.response.data.message);
+      });
+  });
+}
+
+export function getAllPosts() {
+  return new Promise(async (resolve, reject) => {
+    axios
+      .get(URL + postsPath)
+      .then((res) => {
+        const data = res.data;
+        const user = store.getState().user;
+        const followings = store.getState().user.following?.user_ids || [];
+        const posts = {};
+
+        posts.home = data.filter((post) => {
+          const isOwnPost = post.user._id === user._id;
+          const isFollowingPost = followings.includes(post.user._id);
+
+          return isOwnPost || isFollowingPost;
+        });
+
+        posts.explore = data;
+
+        posts.saved = data.filter((post) =>
+          user.saved_post_ids.includes(post._id)
+        );
+
+        initPosts(store, posts);
+        resolve();
+      })
+      .catch((e) => {
+        console.log(e);
         notifyError(e.response.data.message);
         reject(e.response.data.message);
       });
