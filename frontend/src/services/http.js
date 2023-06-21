@@ -10,11 +10,11 @@ const authPath = "/api/auth";
 const usersPath = "/api/users";
 const postsPath = "/api/posts";
 
-const options = {
+const options = () => ({
   headers: {
     "x-tweeter-auth": localStorage.getItem("x-tweeter-auth"),
   },
-};
+});
 
 export function createUser(payload) {
   return new Promise(async (resolve, reject) => {
@@ -84,11 +84,12 @@ export function verifyUser(token) {
 }
 
 export function createPost(post) {
-  options.headers["content-type"] = "multipart/form-data";
+  const option = options();
+  option.headers["content-type"] = "multipart/form-data";
 
   return new Promise(async (resolve, reject) => {
     axios
-      .post(URL + postsPath, post, options)
+      .post(URL + postsPath, post, option)
       .then((res) => {
         addPost(store, res.data);
 
@@ -142,7 +143,7 @@ export function toggleLike(post_id, method) {
 
   return new Promise(async (resolve, reject) => {
     axios
-      .post(`${URL + postsPath}/${post_id}/${method}`, {}, options)
+      .post(`${URL + postsPath}/${post_id}/${method}`, {}, options())
       .then(() => {
         if (method === methods[0])
           likePost(store, { post_id, user_id: user._id });
@@ -165,7 +166,7 @@ export function toggleSave(post_id, method) {
 
   return new Promise(async (resolve, reject) => {
     axios
-      .post(`${URL + postsPath}/${post_id}/${method}`, {}, options)
+      .post(`${URL + postsPath}/${post_id}/${method}`, {}, options())
       .then(() => {
         if (method === methods[0])
           savePost(store, { post_id, user_id: user._id });
