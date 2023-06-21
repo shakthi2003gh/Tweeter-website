@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import movement from "moment";
 import UserImage from "../components/userImage";
 import CommentInputGroup from "../components/commentInputGroup";
+import { toggleLike } from "../services/http";
 
 function Post({ post }) {
   const { _id: id, image, followers } = useSelector((state) => state.user);
@@ -28,6 +29,12 @@ function Post({ post }) {
 
     return followers.user_ids.includes(user._id);
   }, [post, followers]);
+
+  const handleToggleLike = async () => {
+    const method = isLiked ? "unlike" : "like";
+
+    await toggleLike(post._id, method);
+  };
 
   return (
     <div className="post">
@@ -67,7 +74,10 @@ function Post({ post }) {
           <span>comment</span>
         </button>
 
-        <button className={"btn" + (isLiked ? " liked" : "")}>
+        <button
+          className={"btn" + (isLiked ? " liked" : "")}
+          onClick={handleToggleLike}
+        >
           <i className="bi bi-heart"></i>
           <span>{isLiked ? "liked" : "like"}</span>
         </button>
