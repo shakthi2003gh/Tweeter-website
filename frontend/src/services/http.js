@@ -3,6 +3,7 @@ import { notifyError } from "./toast";
 import store from "../store/index";
 import { AddUser, removeUser } from "../store/user";
 import { initPosts, addPost, likePost, unlikePost } from "../store/posts";
+import { savePost, unsavePost } from "../store/posts";
 
 const URL = import.meta.env.VITE_API_ENDPOINT;
 const authPath = "/api/auth";
@@ -146,6 +147,29 @@ export function toggleLike(post_id, method) {
         if (method === methods[0])
           likePost(store, { post_id, user_id: user._id });
         else unlikePost(store, { post_id, user_id: user._id });
+
+        resolve();
+      })
+      .catch((e) => {
+        notifyError(e.response.data);
+        reject(e.response.data);
+      });
+  });
+}
+
+export function toggleSave(post_id, method) {
+  const user = store.getState().user;
+
+  const methods = ["save", "unsave"];
+  if (!methods.includes(method)) return new Error("Method is invalid.");
+
+  return new Promise(async (resolve, reject) => {
+    axios
+      .post(`${URL + postsPath}/${post_id}/${method}`, {}, options)
+      .then(() => {
+        if (method === methods[0])
+          savePost(store, { post_id, user_id: user._id });
+        else unsavePost(store, { post_id, user_id: user._id });
 
         resolve();
       })

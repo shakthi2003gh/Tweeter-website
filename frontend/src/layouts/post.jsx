@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import movement from "moment";
 import UserImage from "../components/userImage";
 import CommentInputGroup from "../components/commentInputGroup";
-import { toggleLike } from "../services/http";
+import { toggleLike, toggleSave } from "../services/http";
 
 function Post({ post }) {
   const { _id: id, image, followers } = useSelector((state) => state.user);
@@ -34,6 +34,12 @@ function Post({ post }) {
     const method = isLiked ? "unlike" : "like";
 
     await toggleLike(post._id, method);
+  };
+
+  const handleToggleSave = async () => {
+    const method = isSaved ? "unsave" : "save";
+
+    await toggleSave(post._id, method);
   };
 
   return (
@@ -82,7 +88,10 @@ function Post({ post }) {
           <span>{isLiked ? "liked" : "like"}</span>
         </button>
 
-        <button className={"btn" + (isSaved ? " saved" : "")}>
+        <button
+          className={"btn" + (isSaved ? " saved" : "")}
+          onClick={handleToggleSave}
+        >
           <i className="bi bi-bookmark"></i>
           <span>{isSaved ? "saved" : "save"}</span>
         </button>
