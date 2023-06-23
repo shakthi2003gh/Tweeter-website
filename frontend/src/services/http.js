@@ -36,6 +36,20 @@ export function createUser(payload) {
   });
 }
 
+export function getUser(userId) {
+  return new Promise(async (resolve, reject) => {
+    axios
+      .get(URL + usersPath + "/" + userId, options())
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch((e) => {
+        notifyError(e.response.data);
+        reject(e.response.data);
+      });
+  });
+}
+
 export function loginUser(payload) {
   return new Promise(async (resolve, reject) => {
     axios
