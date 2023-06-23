@@ -1,7 +1,7 @@
 import axios from "axios";
 import { notifyError } from "./toast";
 import store from "../store/index";
-import { AddUser, removeUser } from "../store/user";
+import { AddUser, followUser, removeUser, unFollowUser } from "../store/user";
 import { initPosts, addPost, likePost, unlikePost } from "../store/posts";
 import { savePost, unsavePost } from "../store/posts";
 
@@ -189,6 +189,27 @@ export function toggleSave(post_id, method) {
         resolve();
       })
       .catch((e) => {
+        notifyError(e.response.data);
+        reject(e.response.data);
+      });
+  });
+}
+
+export function toggleFollow(user_id, method) {
+  const methods = ["follow", "unfollow"];
+  if (!methods.includes(method)) return new Error("Method is invalid.");
+
+  return new Promise(async (resolve, reject) => {
+    axios
+      .post(`${URL + usersPath}/${user_id}/${method}`, {}, options())
+      .then(() => {
+        if (method === methods[0]) followUser(store, user_id);
+        else unFollowUser(store, user_id);
+
+        resolve();
+      })
+      .catch((e) => {
+        console.log(e);
         notifyError(e.response.data);
         reject(e.response.data);
       });
