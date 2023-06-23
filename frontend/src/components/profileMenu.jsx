@@ -5,7 +5,7 @@ import UserImage from "./userImage";
 
 function ProfileMenu() {
   const navigate = useNavigate();
-  const path = useSelector((state) => state.user.image);
+  const { _id, image } = useSelector((state) => state.user);
 
   const handleClick = () => {
     logoutUser();
@@ -14,8 +14,8 @@ function ProfileMenu() {
 
   return (
     <div className="profile-menu">
-      <Link to="/profile">
-        <UserImage path={path} />
+      <Link to={"/profile/" + _id}>
+        <UserImage path={image} />
       </Link>
 
       <div className="menu">

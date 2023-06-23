@@ -2,7 +2,6 @@
   position: relative;
   font-size: 28px;
 
-  &:focus-within .menu,
   &:hover .menu {
     opacity: 100%;
     transform: translateX(40%) translateY(0);

@@ -6,6 +6,11 @@
 body {
   background-color: rgba(242, 242, 242, 1);
   min-height: 100dvh;
+
+  &:has(.profile) {
+    background: url("/cover.jpg") no-repeat, rgba(242, 242, 242, 1);
+    background-size: 100dvw clamp(220px, 40vw, 300px), 100%;
+  }
 }
 
 main {

@@ -16,7 +16,7 @@ function App() {
 
       <main className="container">
         <Routes>
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/:id" element={<Profile />} />
           <Route path="/bookmarks" element={<Bookmarks />} />
           <Route path="/explore" element={<Explore />} />
           <Route path="/" element={<Home />} />
