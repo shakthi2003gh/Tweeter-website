@@ -1,0 +1,64 @@
+.profile-edit {
+  display: grid;
+  place-items: center;
+  height: calc(100vh - 130px);
+
+  .form {
+    width: 100%;
+  }
+
+  .image {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin-bottom: 1.5rem;
+    border: 1px dashed #6c757d;
+    border-radius: 8px;
+    background: white;
+    overflow: hidden;
+    cursor: pointer;
+
+    &::before {
+      position: absolute;
+      inset: 0;
+      content: "+";
+      display: grid;
+      place-content: center;
+      font-size: 2rem;
+      color: inherit;
+    }
+
+    &:hover i {
+      display: grid;
+    }
+
+    img {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    i {
+      position: absolute;
+      inset: 0;
+      display: none;
+      place-content: center;
+      font-size: 1.5rem;
+      color: white;
+      background-color: rgba(255, 0, 0, 0.226);
+      z-index: 54;
+    }
+
+    input {
+      display: none;
+    }
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: end;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+}
