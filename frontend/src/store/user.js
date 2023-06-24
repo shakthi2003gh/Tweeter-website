@@ -6,6 +6,7 @@ const userSlice = createSlice({
   reducers: {
     login: (_, action) => action.payload,
     logout: () => ({}),
+    update: (_, action) => action.payload,
     follow: (state, action) => {
       state.following.user_ids.push(action.payload);
       state.following.count++;
@@ -18,7 +19,7 @@ const userSlice = createSlice({
   },
 });
 
-const { login, logout, follow, unfollow } = userSlice.actions;
+const { login, logout, update, follow, unfollow } = userSlice.actions;
 
 export function AddUser(store, user) {
   store.dispatch(login(user));
@@ -26,6 +27,9 @@ export function AddUser(store, user) {
 
 export function removeUser(store) {
   store.dispatch(logout());
+}
+export function updateUser(store, user) {
+  store.dispatch(update(user));
 }
 
 export function followUser(store, id) {

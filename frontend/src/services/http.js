@@ -1,7 +1,8 @@
 import axios from "axios";
 import { notifyError } from "./toast";
 import store from "../store/index";
-import { AddUser, followUser, removeUser, unFollowUser } from "../store/user";
+import { AddUser, removeUser, updateUser } from "../store/user";
+import { followUser, unFollowUser } from "../store/user";
 import { initPosts, addPost, likePost, unlikePost } from "../store/posts";
 import { commentPost } from "../store/posts";
 import { savePost, unsavePost } from "../store/posts";
@@ -11,7 +12,7 @@ const authPath = "/api/auth";
 const usersPath = "/api/users";
 const postsPath = "/api/posts";
 
-const options = () => ({
+const getOptions = () => ({
   headers: {
     "x-tweeter-auth": localStorage.getItem("x-tweeter-auth"),
   },
@@ -37,10 +38,29 @@ export function createUser(payload) {
   });
 }
 
+export function userUpdate(payload) {
+  const options = getOptions();
+  options.headers["content-type"] = "multipart/form-data";
+
+  return new Promise(async (resolve, reject) => {
+    axios
+      .patch(URL + usersPath, payload, options)
+      .then((res) => {
+        updateUser(store, res.data);
+
+        resolve();
+      })
+      .catch((e) => {
+        notifyError(e.response.data);
+        reject(e.response.data);
+      });
+  });
+}
+
 export function getUser(userId) {
   return new Promise(async (resolve, reject) => {
     axios
-      .get(URL + usersPath + "/" + userId, options())
+      .get(URL + usersPath + "/" + userId, getOptions())
       .then((res) => {
         resolve(res.data);
       })
@@ -99,12 +119,12 @@ export function verifyUser(token) {
 }
 
 export function createPost(post) {
-  const option = options();
-  option.headers["content-type"] = "multipart/form-data";
+  const options = getOptions();
+  options.headers["content-type"] = "multipart/form-data";
 
   return new Promise(async (resolve, reject) => {
     axios
-      .post(URL + postsPath, post, option)
+      .post(URL + postsPath, post, options)
       .then((res) => {
         addPost(store, res.data);
 
@@ -156,7 +176,7 @@ export function postComment(post_id, message) {
       .post(
         URL + postsPath + "/" + post_id + "/comment",
         { message },
-        options()
+        getOptions()
       )
       .then((res) => {
         commentPost(store, res.data);
@@ -178,7 +198,7 @@ export function toggleLike(post_id, method) {
 
   return new Promise(async (resolve, reject) => {
     axios
-      .post(`${URL + postsPath}/${post_id}/${method}`, {}, options())
+      .post(`${URL + postsPath}/${post_id}/${method}`, {}, getOptions())
       .then(() => {
         if (method === methods[0])
           likePost(store, { post_id, user_id: user._id });
@@ -201,7 +221,7 @@ export function toggleSave(post_id, method) {
 
   return new Promise(async (resolve, reject) => {
     axios
-      .post(`${URL + postsPath}/${post_id}/${method}`, {}, options())
+      .post(`${URL + postsPath}/${post_id}/${method}`, {}, getOptions())
       .then(() => {
         if (method === methods[0])
           savePost(store, { post_id, user_id: user._id });
@@ -222,7 +242,7 @@ export function toggleFollow(user_id, method) {
 
   return new Promise(async (resolve, reject) => {
     axios
-      .post(`${URL + usersPath}/${user_id}/${method}`, {}, options())
+      .post(`${URL + usersPath}/${user_id}/${method}`, {}, getOptions())
       .then(() => {
         if (method === methods[0]) followUser(store, user_id);
         else unFollowUser(store, user_id);
