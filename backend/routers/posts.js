@@ -7,7 +7,7 @@ const { auth } = require("../middleware/auth");
 const { validateObjectId } = require("../middleware/validateObjectId");
 
 router.get("/", async (_, res) => {
-  const posts = await Post.find();
+  const posts = await Post.find().sort({ createdAt: "desc" });
 
   res.send(posts);
 });
