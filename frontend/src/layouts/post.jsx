@@ -1,10 +1,11 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import movement from "moment";
 import UserImage from "../components/userImage";
 import CommentInputGroup from "../components/commentInputGroup";
 import { toggleLike, toggleSave } from "../services/http";
+import Comment from "../components/comment";
 
 function Post({ post }) {
   const { _id: id, image, followers } = useSelector((state) => state.user);
@@ -21,6 +22,7 @@ function Post({ post }) {
   const likedCount = post.likes.count;
   const savedCount = post.saved.count;
 
+  const [showComments, setShowComments] = useState(false);
   const isLiked = post.likes.user_ids.includes(id);
   const isSaved = post.saved.user_ids.includes(id);
 
@@ -29,6 +31,10 @@ function Post({ post }) {
 
     return followers.user_ids.includes(user._id);
   }, [post, followers]);
+
+  const handleToggleShowComment = () => {
+    setShowComments((prev) => !prev && !!post.comments.length);
+  };
 
   const handleToggleLike = async () => {
     const method = isLiked ? "unlike" : "like";
@@ -44,65 +50,82 @@ function Post({ post }) {
 
   return (
     <div className="post">
-      <div className="header">
-        <UserImage path={user.image} />
+      {showComments ? (
+        <div className="comments">
+          <button
+            className="btn btn-secondary"
+            onClick={handleToggleShowComment}
+          >
+            back
+          </button>
 
-        <div>
-          <Link to={"/profile/" + user._id} className="name">
-            {user.name}
-          </Link>
-
-          <span className="created-at">{createdAt}</span>
+          {post.comments.map((comment) => (
+            <Comment key={comment._id} {...comment} />
+          ))}
         </div>
-      </div>
+      ) : (
+        <>
+          <div className="header">
+            <UserImage path={user.image} />
 
-      <div className="content">
-        <div className="text">{content.text}</div>
+            <div>
+              <Link to={"/profile/" + user._id} className="name">
+                {user.name}
+              </Link>
 
-        {postImage && (
-          <div className="image">
-            <img src={postImage} alt="" loading="lazy" />
+              <span className="created-at">{createdAt}</span>
+            </div>
           </div>
-        )}
-      </div>
 
-      <div className="feedback-stats">
-        <span className="comments">{commentsCount} comments</span>
+          <div className="content">
+            <div className="text">{content.text}</div>
 
-        <span className="likes">{likedCount} liked</span>
+            {postImage && (
+              <div className="image">
+                <img src={postImage} alt="" loading="lazy" />
+              </div>
+            )}
+          </div>
 
-        <span className="saved">{savedCount} saved</span>
-      </div>
+          <div className="feedback-stats">
+            <span className="comments">{commentsCount} comments</span>
 
-      <div className="feedback-section">
-        <button className="btn">
-          <i className="bi bi-chat-right"></i>
-          <span>comment</span>
-        </button>
+            <span className="likes">{likedCount} liked</span>
 
-        <button
-          className={"btn" + (isLiked ? " liked" : "")}
-          onClick={handleToggleLike}
-        >
-          <i className="bi bi-heart"></i>
-          <span>{isLiked ? "liked" : "like"}</span>
-        </button>
+            <span className="saved">{savedCount} saved</span>
+          </div>
 
-        <button
-          className={"btn" + (isSaved ? " saved" : "")}
-          onClick={handleToggleSave}
-        >
-          <i className="bi bi-bookmark"></i>
-          <span>{isSaved ? "saved" : "save"}</span>
-        </button>
-      </div>
+          <div className="feedback-section">
+            <button className="btn" onClick={handleToggleShowComment}>
+              <i className="bi bi-chat-right"></i>
+              <span>comment</span>
+            </button>
 
-      {canReply && (
-        <div className="comment-composer">
-          <UserImage path={image} />
+            <button
+              className={"btn" + (isLiked ? " liked" : "")}
+              onClick={handleToggleLike}
+            >
+              <i className="bi bi-heart"></i>
+              <span>{isLiked ? "liked" : "like"}</span>
+            </button>
 
-          <CommentInputGroup />
-        </div>
+            <button
+              className={"btn" + (isSaved ? " saved" : "")}
+              onClick={handleToggleSave}
+            >
+              <i className="bi bi-bookmark"></i>
+              <span>{isSaved ? "saved" : "save"}</span>
+            </button>
+          </div>
+
+          {canReply && (
+            <div className="comment-composer">
+              <UserImage path={image} />
+
+              <CommentInputGroup id={post._id} />
+            </div>
+          )}
+        </>
       )}
     </div>
   );
