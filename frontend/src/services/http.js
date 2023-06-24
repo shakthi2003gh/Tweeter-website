@@ -179,6 +179,7 @@ export function postComment(post_id, message) {
         getOptions()
       )
       .then((res) => {
+        res.data.comment._id = Date.now();
         commentPost(store, res.data);
 
         resolve();
