@@ -144,10 +144,37 @@ const postsSlice = createSlice({
 
       state.saved = state.saved.filter((p) => p._id !== post_id);
     },
+    comment: (state, action) => {
+      const { post_id, comment } = action.payload;
+
+      state.home.map((post) => {
+        if (post._id === post_id) {
+          post.comments.push(comment);
+        }
+
+        return post;
+      });
+
+      state.explore.map((post) => {
+        if (post._id === post_id) {
+          post.comments.push(comment);
+        }
+
+        return post;
+      });
+
+      state.saved.map((post) => {
+        if (post._id === post_id) {
+          post.comments.push(comment);
+        }
+
+        return post;
+      });
+    },
   },
 });
 
-const { add, get, like, unlike, save, unsave } = postsSlice.actions;
+const { add, get, like, unlike, save, unsave, comment } = postsSlice.actions;
 
 export function initPosts(store, post) {
   store.dispatch(get(post));
@@ -171,6 +198,10 @@ export function savePost(store, payload) {
 
 export function unsavePost(store, payload) {
   store.dispatch(unsave(payload));
+}
+
+export function commentPost(store, payload) {
+  store.dispatch(comment(payload));
 }
 
 export default postsSlice.reducer;

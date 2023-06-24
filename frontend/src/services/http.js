@@ -3,6 +3,7 @@ import { notifyError } from "./toast";
 import store from "../store/index";
 import { AddUser, followUser, removeUser, unFollowUser } from "../store/user";
 import { initPosts, addPost, likePost, unlikePost } from "../store/posts";
+import { commentPost } from "../store/posts";
 import { savePost, unsavePost } from "../store/posts";
 
 const URL = import.meta.env.VITE_API_ENDPOINT;
@@ -140,6 +141,26 @@ export function getAllPosts() {
         );
 
         initPosts(store, posts);
+        resolve();
+      })
+      .catch((e) => {
+        notifyError(e.response.data);
+        reject(e.response.data);
+      });
+  });
+}
+
+export function postComment(post_id, message) {
+  return new Promise(async (resolve, reject) => {
+    axios
+      .post(
+        URL + postsPath + "/" + post_id + "/comment",
+        { message },
+        options()
+      )
+      .then((res) => {
+        commentPost(store, res.data);
+
         resolve();
       })
       .catch((e) => {
