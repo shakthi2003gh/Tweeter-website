@@ -3,7 +3,7 @@ import useMediaQuery from "../hooks/useMediaQuery";
 import logoImage from "../assets/tweeter.svg";
 import smallLogo from "../assets/tweeter-small.svg";
 import Navigation from "../components/navigation";
-import ProfileMenu from "../components/ProfileMenu";
+import ProfileMenu from "../components/profileMenu";
 
 function Header() {
   const isNonMobileDisplay = useMediaQuery(600);
