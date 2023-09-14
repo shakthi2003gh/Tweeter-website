@@ -13,9 +13,7 @@ function Post({ post }) {
   const user = post.user;
   const content = post.content;
 
-  const postImage = content.image
-    ? import.meta.env.VITE_API_ENDPOINT + "/" + content.image
-    : "";
+  const postImage = content.image || "";
   const createdAt = movement(post.createdAt).calendar();
 
   const commentsCount = post.comments.length;

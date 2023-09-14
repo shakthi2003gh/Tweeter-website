@@ -53,6 +53,7 @@ const schema = new mongoose.Schema(
 function validatePost(post) {
   const schema = Joi.object({
     text: Joi.string().required().min(5).max(400),
+    image: Joi.string(),
     isEveryOneCanReply: Joi.boolean(),
   });
 

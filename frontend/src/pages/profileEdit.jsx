@@ -11,9 +11,8 @@ function ProfileEdit() {
   const [loading, setLoading] = useState(false);
 
   const imageRef = useRef(null);
-  const userImagePath = import.meta.env.VITE_API_ENDPOINT + "/" + user.image;
 
-  const [image, setImage] = useState(user.image ? userImagePath : "");
+  const [image, setImage] = useState(user.image || "");
   const [fileBlob, setFileBlob] = useState(undefined);
 
   const [name, setName] = useState(user.name || "");

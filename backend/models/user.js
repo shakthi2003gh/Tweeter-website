@@ -113,6 +113,7 @@ function validateSignin(user) {
 function validateUpdateUser(user) {
   const schema = Joi.object({
     name: Joi.string().min(3).max(50),
+    image: Joi.string(),
     bio: Joi.string().min(5).max(150),
   });
 

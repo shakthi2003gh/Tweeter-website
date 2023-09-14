@@ -4,6 +4,7 @@ const _ = require("lodash");
 const { auth } = require("../middleware/auth");
 const { validateObjectId } = require("../middleware/validateObjectId");
 const { uploadProfile } = require("../services/multer");
+const { s3UploadProfile } = require("../services/awsS3");
 const { User, validateSignup, validateUpdateUser } = require("../models/user");
 const { Post } = require("../models/post");
 
@@ -96,14 +97,13 @@ router.post("/:id/unfollow", auth, validateObjectId, async (req, res) => {
   res.sendStatus(204);
 });
 
-router.patch("/", auth, uploadProfile, async (req, res) => {
+router.patch("/", auth, uploadProfile, s3UploadProfile, async (req, res) => {
   const { error, value } = validateUpdateUser(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const filename = "profile/" + req.file?.filename;
   const updateUser = {
     ...value,
-    image: req.file ? filename : undefined,
+    image: value.image || undefined,
   };
 
   const user = await User.findByIdAndUpdate(req.user._id, updateUser, {

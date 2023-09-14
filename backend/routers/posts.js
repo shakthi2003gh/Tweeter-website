@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const { uploadPost } = require("../services/multer");
+const { s3UploadPost } = require("../services/awsS3");
 const { User } = require("../models/user");
 const { Post, validatePost } = require("../models/post");
 const { validateComment } = require("../models/comment");
@@ -26,16 +27,15 @@ router.get("/:id/comments", validateObjectId, async (req, res) => {
   res.send(post.comments);
 });
 
-router.post("/", auth, uploadPost, async (req, res) => {
+router.post("/", auth, uploadPost, s3UploadPost, async (req, res) => {
   const { error, value } = validatePost(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const filename = "posts/" + req.file?.filename;
   const newPost = {
     user: req.user,
     content: {
       text: value.text,
-      image: req.file ? filename : undefined,
+      image: value.image || undefined,
     },
     isEveryOneCanReply: value.isEveryOneCanReply,
   };
