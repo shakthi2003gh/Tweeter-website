@@ -1,7 +1,9 @@
 header {
+  position: relative;
   padding-inline: 1rem;
   box-shadow: 0px 1px 36px -6px #a7a7a752;
   background-color: white;
+  z-index: 54;
 
   .container {
     display: flex;
